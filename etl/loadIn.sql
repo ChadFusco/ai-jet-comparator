@@ -1,3 +1,5 @@
+DORP TABLE IF EXISTS jets;
+
 CREATE TABLE public.jets (
   name TEXT PRIMARY KEY NOT NULL,
   wingspan DECIMAL(65,30),
@@ -5,7 +7,7 @@ CREATE TABLE public.jets (
   year_manufactured INT
 );
 
-COPY jets FROM '/Users/chadfusco/Repos/ai-jet-comparator/etl/jet_facts.csv' WITH (FORMAT CSV, HEADER true);
+COPY jets FROM '/home/ubuntu/ai-jet-comparator/etl/jet_facts.csv' WITH (FORMAT CSV, HEADER true);
 
 
 -- Execute this file from the command line by typing:
