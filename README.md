@@ -32,6 +32,7 @@ To deploy the app:
 - Prisma v8
 - Next v14.1
 - nextui v2.2
+- openai v4.29
 
 ## Learn More
 
