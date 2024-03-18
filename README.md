@@ -6,13 +6,9 @@ The app has been deployed to an AWC EC2 instance [here](http://ec2-52-33-56-56.u
 
 ## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Run `npm install`
+- Run the development server: `npm run dev`
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
@@ -24,6 +20,7 @@ To deploy the app:
 - Place the repo on your favorite server
 - Rename .env_example to .env and put in your environment variables
 - Get an OpenAI API key from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- Run `npm install`
 - Run `npm run build`
 - Run `npm run start`
 
