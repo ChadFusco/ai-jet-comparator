@@ -116,7 +116,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex flex-col gap-5 p-24 pt-6">
+    <main className="flex flex-col gap-5 p-24 pt-6 max-w-[1200px] mx-auto">
       <div className="text-2xl">
         Top 10 Charter Jets
       </div>
