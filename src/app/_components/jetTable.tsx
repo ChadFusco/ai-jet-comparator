@@ -13,8 +13,6 @@ export default function JetTable(props: {
 }) {
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log('props.jets:', props.jets)
-
   let list = useAsyncList({
     load() {
       setIsLoading(false);
@@ -42,6 +40,8 @@ export default function JetTable(props: {
     setIsLoading(true);
     list.reload();
   }, [props.jets]);
+
+  let numberSelected: number = 0;
 
   return (
     <Table

@@ -78,10 +78,6 @@ export default function Home() {
 
   async function compareJets() {
 
-    if (selectedJets.length < 2) {
-      return;
-    }
-
     const options = {
       method: 'POST',
       headers: new Headers({ 'content-type': 'application/json' }),
@@ -90,14 +86,12 @@ export default function Home() {
     const res = await fetch('/api', options);
 
     const results = await res.json();
-    console.log('results:', results);
     const matches = results.match(/\[(.|\n)*?]/);
 
     if (matches) {
       const jsonArrayString = matches[0];
       try {
         const jsonArray = JSON.parse(jsonArrayString);
-        console.log('jsonArray:', jsonArray)
         setCompareArray(jsonArray);
       } catch {
         setCompareArray(null);
@@ -130,7 +124,7 @@ export default function Home() {
           handleSelectionChange={handleJetSelectionChange}
         />
       </div>
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center gap-10">
         <div className="flex flex-row items-center gap-3">
           <div className="font-bold">
             Ask OpenAI to compare selected jets by:
@@ -163,8 +157,8 @@ export default function Home() {
             </Dropdown>
           </div>
         </div>
-        <Button size="md" onPress={compareJets}>
-          Compare Selected Jets
+        <Button size="md" onPress={compareJets} isDisabled={selectedJets.length < 2}>
+          {selectedJets.length >= 2 ? "Compare Selected Jets" : "Select 2 or More Jets"}
         </Button>
       </div>
       <div className="text-2xl">
