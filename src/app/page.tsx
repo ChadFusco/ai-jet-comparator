@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { prisma as db } from "@/app/db";
-import { Button } from '@nextui-org/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SortDescriptor } from '@nextui-org/react';
 const JetTable = dynamic( () => import('./_components/jetTable'), { ssr: false } ); // lazy loading
 
 const jetFields = [
@@ -25,50 +24,159 @@ const jetFields = [
   },
 ];
 
+const compareFields = [
+  {
+    key: "rank",
+    label: "Rank",
+  },
+  {
+    key: "name",
+    label: "Name",
+  },
+  {
+    key: "value",
+    label: "Value",
+  },
+];
+
+const initialJetSortDescriptor: SortDescriptor = {
+  column: "wingspan",
+  direction: "descending"
+}
+
+const initialCompareSortDescriptor: SortDescriptor = {
+  column: "rank",
+  direction: "ascending"
+}
+
 const comparisonFields = [
   'Top Speed',
   'Fuel Efficiency',
   'Maximum Seats'
-]
+];
 
 export default function Home() {
   const [jets, setJets] = useState([]);
+  const [selectedJets, setSelectedJets] = useState([]);
+  // const [selectedKeys, setSelectedKeys] = useState(comparisonFields[0]);
+  const [selectedKeys, setSelectedKeys] = useState(new Set([comparisonFields[0]]));
+  const [compareArray, setCompareArray] = useState<[] | null>([]);
+
+  const selectedComparator = useMemo(
+    () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
+    [selectedKeys]
+  );
 
   useEffect(() => {
     async function fetchJets() {
-      const res = await fetch('http://localhost:3000/api');
+      const res = await fetch('/api');
       const { sortedJets } = await res.json();
       setJets(sortedJets);
     }
-
     fetchJets();
   }, []);
 
+  async function compareJets() {
+
+    if (selectedJets.length < 2) {
+      return;
+    }
+
+    const options = {
+      method: 'POST',
+      headers: new Headers({ 'content-type': 'application/json' }),
+      body: JSON.stringify({ selectedJets, selectedComparator }),
+    };
+    const res = await fetch('/api', options);
+
+    const results = await res.json();
+    console.log('results:', results);
+    const matches = results.match(/\[(.|\n)*?]/);
+
+    if (matches) {
+      const jsonArrayString = matches[0];
+      try {
+        const jsonArray = JSON.parse(jsonArrayString);
+        console.log('jsonArray:', jsonArray)
+        setCompareArray(jsonArray);
+      } catch {
+        setCompareArray(null);
+      }
+    } else {
+      setCompareArray(null);
+    }
+
+  }
+
+  function handleJetSelectionChange(keys: Selection) {
+    setSelectedJets(
+      keys === 'all' ?
+        jets :
+        jets.filter((jet: any) => keys.has(jet.name))
+    );
+  }
+
   return (
-    <main className="flex flex-col gap-5 p-24">
+    <main className="flex flex-col gap-5 p-24 pt-6">
       <div className="text-2xl">
         Top 10 Charter Jets
       </div>
       <div className="min-h-[440px]">
-        <JetTable jets={jets} fields={jetFields}/>
+        <JetTable
+          jets={jets}
+          fields={jetFields}
+          initialSortDescriptor={initialJetSortDescriptor}
+          enableSelector={true}
+          handleSelectionChange={handleJetSelectionChange}
+        />
       </div>
-      <div className="flex flex-row items-center gap-3">
-        <div className="font-bold">
-          Ask OpenAI to compare selected jets by:
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center gap-3">
+          <div className="font-bold">
+            Ask OpenAI to compare selected jets by:
+          </div>
+          <div>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  size="sm"
+                  variant="bordered" 
+                  className="capitalize"
+                >
+                  {selectedComparator}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Single selection example"
+                variant="flat"
+                disallowEmptySelection
+                selectionMode="single"
+                selectedKeys={selectedKeys}
+                onSelectionChange={(keys) => setSelectedKeys(new Set<string>(Array.from(keys as Set<string>)))}
+              >
+                {
+                  comparisonFields.map(field => (
+                    <DropdownItem key={field}>{field}</DropdownItem>
+                  ))
+                }
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
-        <div className="w-40">
-          <select className="form-select block w-full h-8 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-            {
-              comparisonFields.map(field => (
-                <option key={field} value={field}>{field}</option>
-              ))
-            }
-          </select>
-        </div>
-        <Button size="md">
+        <Button size="md" onPress={compareJets}>
           Compare Selected Jets
         </Button>
       </div>
+      <div className="text-2xl">
+        Comparison Results
+      </div>
+      <JetTable
+        jets={compareArray}
+        fields={compareFields}
+        initialSortDescriptor={initialCompareSortDescriptor}
+        enableSelector={false}
+        handleSelectionChange={() => {}}
+      />
     </main>
   );
 }

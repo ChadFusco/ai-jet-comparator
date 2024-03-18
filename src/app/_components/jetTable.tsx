@@ -1,13 +1,19 @@
-'use client'
-
-import React, { Key } from "react";
+import React, { Key, useEffect } from "react";
 import { useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Selection } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { SortDescriptor } from "@nextui-org/react";
 
-export default function JetTable(props: { jets: any, fields: { key: Key, label: string }[] }) {
+export default function JetTable(props: {
+  jets: any,
+  fields: { key: Key, label: string }[],
+  initialSortDescriptor: SortDescriptor,
+  enableSelector: boolean,
+  handleSelectionChange: ((keys: Selection) => void)
+}) {
   const [isLoading, setIsLoading] = useState(true);
+
+  console.log('props.jets:', props.jets)
 
   let list = useAsyncList({
     load() {
@@ -29,47 +35,52 @@ export default function JetTable(props: { jets: any, fields: { key: Key, label: 
         }),
       };
     },
-    initialSortDescriptor: {
-      column: "wingspan",
-      direction: "descending"
-    }
+    initialSortDescriptor: props.initialSortDescriptor
   });
 
-  function handleSelectionChange(keys: Selection) {
-    // const output = [...keys];
-    
-    const selectedJets = keys === 'all' ?
-      props.jets :
-      props.jets.filter((jet: any) => keys.has(jet.name));
-
-    console.log('selectedJets:', selectedJets);
-  }
+  useEffect(() => {
+    setIsLoading(true);
+    list.reload();
+  }, [props.jets]);
 
   return (
     <Table
       aria-label="Table of Charter Jets"
       sortDescriptor={list.sortDescriptor}
       onSortChange={list.sort}
-      onSelectionChange={handleSelectionChange}
-      classNames={{
-        table: "min-h-[400px]",
-      }}
-      selectionMode="multiple"
+      onSelectionChange={props.handleSelectionChange}
+      selectionMode={props.enableSelector ? 'multiple' : 'none'}
     >
       <TableHeader columns={props.fields}>
         {(column) => <TableColumn key={column.key} allowsSorting>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody
-        items={list.items}
-        isLoading={isLoading}
-        loadingContent={<Spinner label="Loading..." />}
-      >
-        {(item: any) => (
-          <TableRow key={item.name}>
-            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
+      {
+        props.jets !== null ?
+          (
+            <TableBody
+              items={list.items}
+              isLoading={isLoading}
+              loadingContent={<Spinner label="Loading..." />}
+            >
+              {(item: any) => (
+                <TableRow key={item.name}>
+                  {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+                </TableRow>
+              )}
+            </TableBody>
+          ) :
+          (
+            <TableBody items={[]}>
+              <TableRow key={"ERROR"}>
+                <TableCell className="italic font-extrabold tracking-widest">
+                  ERROR! Please try again.
+                </TableCell>
+                <TableCell> </TableCell>
+                <TableCell> </TableCell>
+              </TableRow>
+            </TableBody>
+          )
+      }
     </Table>
   );
 }
