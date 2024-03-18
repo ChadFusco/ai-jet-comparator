@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SortDescriptor } from '@nextui-org/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SortDescriptor, Spinner } from '@nextui-org/react';
 const JetTable = dynamic( () => import('./_components/jetTable'), { ssr: false } ); // lazy loading
 
 const jetFields = [
@@ -58,9 +58,9 @@ const comparisonFields = [
 export default function Home() {
   const [jets, setJets] = useState([]);
   const [selectedJets, setSelectedJets] = useState([]);
-  // const [selectedKeys, setSelectedKeys] = useState(comparisonFields[0]);
   const [selectedKeys, setSelectedKeys] = useState(new Set([comparisonFields[0]]));
   const [compareArray, setCompareArray] = useState<[] | null>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectedComparator = useMemo(
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
@@ -77,6 +77,8 @@ export default function Home() {
   }, []);
 
   async function compareJets() {
+
+    setIsLoading(true);
 
     const options = {
       method: 'POST',
@@ -95,10 +97,13 @@ export default function Home() {
         setCompareArray(jsonArray);
       } catch {
         setCompareArray(null);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setCompareArray(null);
     }
+    setIsLoading(false);
 
   }
 
@@ -157,8 +162,14 @@ export default function Home() {
             </Dropdown>
           </div>
         </div>
-        <Button size="md" onPress={compareJets} isDisabled={selectedJets.length < 2}>
-          {selectedJets.length >= 2 ? "Compare Selected Jets" : "Select 2 or More Jets"}
+        <Button
+          size="md"
+          onPress={compareJets}
+          isDisabled={selectedJets.length < 2}
+          spinner={<Spinner />}
+          isLoading={isLoading}
+        >
+          {isLoading ? '' : (selectedJets.length >= 2 ? "Compare Selected Jets" : "Select 2 or More Jets")}
         </Button>
       </div>
       <div className="text-2xl">
