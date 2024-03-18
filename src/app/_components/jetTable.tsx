@@ -40,6 +40,7 @@ export default function JetTable(props: {
 
   useEffect(() => {
     setIsLoading(true);
+    list.sort(props.initialSortDescriptor);
     list.reload();
   }, [props.jets]);
 
