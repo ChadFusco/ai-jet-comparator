@@ -6,7 +6,7 @@ import { SortDescriptor } from "@nextui-org/react";
 
 export default function JetTable(props: {
   jets: any[],
-  fields: { key: Key, label: string }[],
+  fields: { key: Key, label: string, sortable: boolean }[],
   initialSortDescriptor: SortDescriptor,
   enableSelector: boolean,
   handleSelectionChange: ((keys: Selection) => void)
@@ -35,7 +35,7 @@ export default function JetTable(props: {
     },
 
     initialSortDescriptor: props.initialSortDescriptor
-    
+
   });
 
   useEffect(() => {
@@ -52,7 +52,14 @@ export default function JetTable(props: {
       selectionMode={props.enableSelector ? 'multiple' : 'none'}
     >
       <TableHeader columns={props.fields}>
-        {(column) => <TableColumn key={column.key} allowsSorting>{column.label}</TableColumn>}
+        {column => (
+          <TableColumn
+            key={column.key}
+            allowsSorting={column.sortable}
+          >
+            {column.label}
+          </TableColumn>
+        )}
       </TableHeader>
       <TableBody
         items={list.items}

@@ -9,18 +9,22 @@ const jetFields = [
   {
     key: "name",
     label: "Name",
+    sortable: true
   },
   {
     key: "wingspan",
     label: "Wingspan (ft)",
+    sortable: true
   },
   {
     key: "engine_qty",
     label: "Engines",
+    sortable: true
   },
   {
     key: "year_manufactured",
     label: "Manufacturing Year",
+    sortable: true
   },
 ];
 
@@ -28,14 +32,17 @@ const compareFields = [
   {
     key: "rank",
     label: "Rank",
+    sortable: true
   },
   {
     key: "name",
     label: "Name",
+    sortable: true
   },
   {
     key: "value",
     label: "Value",
+    sortable: false
   },
 ];
 
