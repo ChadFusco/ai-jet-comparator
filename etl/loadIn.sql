@@ -12,11 +12,4 @@ COPY jets FROM '/home/ubuntu/ai-jet-comparator/etl/jet_facts.csv' WITH (FORMAT C
 
 -- Execute this file from the command line by typing:
 -- psql jetai < etl/loadIn.sql
--- to create the tables in the reviews database.
-
--- model Jets {
---   name String @id
---   wingspan Decimal
---   engine_qty Int
---   year_manufactured Int
--- }
+-- to create the tables in the jets database.
