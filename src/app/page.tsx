@@ -12,7 +12,7 @@ const jetFields = [
   },
   {
     key: "wingspan",
-    label: "Wingspan",
+    label: "Wingspan (ft)",
   },
   {
     key: "engine_qty",
@@ -147,7 +147,7 @@ export default function Home() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
-                aria-label="Single selection example"
+                aria-label="Select comparator field"
                 variant="flat"
                 disallowEmptySelection
                 selectionMode="single"
