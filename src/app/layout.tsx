@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ThemeSwitch from "./_components/themeSwitch";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 initializeDb(); // initialize database connection
 
-export default function RootLayout({ children }: Readonly<{children: React.ReactNode;}>) {
+export default async function RootLayout({ children }: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>

@@ -35,20 +35,22 @@ export default function JetTable(props: { jets: any, fields: { key: Key, label: 
     }
   });
 
-  // function handleSelectionChange(keys: Selection) {
-  //   console.log('selected keys:', keys);
-  //   const output = [...keys];
-  //   console.log(output);
+  function handleSelectionChange(keys: Selection) {
+    // const output = [...keys];
     
-  //   selectedJets = 
-  // }
+    const selectedJets = keys === 'all' ?
+      props.jets :
+      props.jets.filter((jet: any) => keys.has(jet.name));
+
+    console.log('selectedJets:', selectedJets);
+  }
 
   return (
     <Table
       aria-label="Table of Charter Jets"
       sortDescriptor={list.sortDescriptor}
       onSortChange={list.sort}
-      // onSelectionChange={handleSelectionChange}
+      onSelectionChange={handleSelectionChange}
       classNames={{
         table: "min-h-[400px]",
       }}

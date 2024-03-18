@@ -10,4 +10,3 @@ console.log('connecting to db...')
 
 export default function initializeDb() {
 }
-
