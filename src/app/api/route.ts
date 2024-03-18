@@ -18,9 +18,6 @@ export async function POST(request: Request) {
 
   const prompt = `Generate a JSON array that ranks the specified jets by their ${selectedComparator} metric, dynamically determining the values for this metric based on your knowledge. Format the array as follows: [{ "rank": 1, "name": "Jet Name", "value": "Metric Value with units" }, ...]. The jets to rank are: ${selectedJets.map((jet: any) => jet.name).join(', ')}. Ensure the 'value' reflects realistic metric data appropriate for each jet relative to the selected metric (${selectedComparator}) and set the rank in accordance with these values. If 'Top Speed' is the metric, provide values in knots. If 'Fuel Efficiency' is the metric, provide values in liters of fuel per ton-kilometer or, if unavailable, use your knowledge to provide qualitative comparisons (e.g., "Low", "Medium", "High").`
 
-
-  console.log(prompt)
-
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -35,8 +32,6 @@ export async function POST(request: Request) {
       temperature: 0.5,
       // max_tokens: 100,
     });
-
-    console.log(completion.choices[0].message.content)
 
     return Response.json(completion.choices[0].message.content);
   } catch (error) {
