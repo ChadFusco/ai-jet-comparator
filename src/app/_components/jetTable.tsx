@@ -5,7 +5,7 @@ import { useAsyncList } from "@react-stately/data";
 import { SortDescriptor } from "@nextui-org/react";
 
 export default function JetTable(props: {
-  jets: any,
+  jets: any[],
   fields: { key: Key, label: string }[],
   initialSortDescriptor: SortDescriptor,
   enableSelector: boolean,
@@ -14,34 +14,34 @@ export default function JetTable(props: {
   const [isLoading, setIsLoading] = useState(true);
 
   let list = useAsyncList({
+
     load() {
       setIsLoading(false);
       return { items: props.jets };
     },
+
     sort({ items, sortDescriptor }: { items: any, sortDescriptor: SortDescriptor }) {
       return {
         items: items.sort((a: any, b: any) => {
           let first = a[sortDescriptor.column as string];
           let second = b[sortDescriptor.column as string];
           let cmp = (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
-
           if (sortDescriptor.direction === "descending") {
             cmp *= -1;
           }
-
           return cmp;
         }),
       };
     },
+
     initialSortDescriptor: props.initialSortDescriptor
+    
   });
 
   useEffect(() => {
     setIsLoading(true);
     list.reload();
   }, [props.jets]);
-
-  let numberSelected: number = 0;
 
   return (
     <Table
@@ -54,33 +54,17 @@ export default function JetTable(props: {
       <TableHeader columns={props.fields}>
         {(column) => <TableColumn key={column.key} allowsSorting>{column.label}</TableColumn>}
       </TableHeader>
-      {
-        props.jets !== null ?
-          (
-            <TableBody
-              items={list.items}
-              isLoading={isLoading}
-              loadingContent={<Spinner label="Loading..." />}
-            >
-              {(item: any) => (
-                <TableRow key={item.name}>
-                  {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-                </TableRow>
-              )}
-            </TableBody>
-          ) :
-          (
-            <TableBody items={[]}>
-              <TableRow key={"ERROR"}>
-                <TableCell className="italic font-extrabold tracking-widest">
-                  ERROR! Please try again.
-                </TableCell>
-                <TableCell> </TableCell>
-                <TableCell> </TableCell>
-              </TableRow>
-            </TableBody>
-          )
-      }
+      <TableBody
+        items={list.items}
+        isLoading={isLoading}
+        loadingContent={<Spinner label="Loading..." />}
+      >
+        {(item: any) => (
+          <TableRow key={item.name}>
+            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+          </TableRow>
+        )}
+      </TableBody>
     </Table>
   );
 }

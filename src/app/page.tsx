@@ -175,13 +175,23 @@ export default function Home() {
       <div className="text-2xl">
         Comparison Results
       </div>
-      <JetTable
-        jets={compareArray}
-        fields={compareFields}
-        initialSortDescriptor={initialCompareSortDescriptor}
-        enableSelector={false}
-        handleSelectionChange={() => {}}
-      />
+      {
+        compareArray === null ?
+          (
+            <div className="italic font-extrabold tracking-widest mx-auto">
+              ERROR! Please try again.
+            </div>
+          ) :
+          (
+            <JetTable
+              jets={compareArray ?? []}
+              fields={compareFields}
+              initialSortDescriptor={initialCompareSortDescriptor}
+              enableSelector={false}
+              handleSelectionChange={() => {}}
+            />
+          )
+      }
     </main>
   );
 }

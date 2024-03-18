@@ -7,6 +7,3 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 console.log('connecting to db...')
-
-export default function initializeDb() {
-}

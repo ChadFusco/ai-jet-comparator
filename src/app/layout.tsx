@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import ThemeSwitch from "./_components/themeSwitch";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import initializeDb from "@/app/db";
 import Providers from "@/app/_components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
   title: "AI Jet Comparator",
   description: "Compare Jet models using OpenAI",
 };
-
-initializeDb(); // initialize database connection
 
 export default async function RootLayout({ children }: Readonly<{children: React.ReactNode;}>) {
   return (
