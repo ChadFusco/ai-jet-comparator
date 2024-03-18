@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/_components/jetTable.jsx", "src/app/_components/jetTable.jsx", "src/app/_components/jetTable.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/_components/jetTable.tsx", "src/app/_components/jetTable.tsx", "src/app/_components/jetTable.tsx"],
   "exclude": ["node_modules"]
 }

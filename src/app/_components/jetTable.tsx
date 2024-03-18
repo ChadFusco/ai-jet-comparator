@@ -1,12 +1,12 @@
 'use client'
 
-import React from "react";
+import React, { Key } from "react";
 import { useState } from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Selection } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { SortDescriptor } from "@nextui-org/react";
 
-export default function JetTable(props: { jets: any }) {
+export default function JetTable(props: { jets: any, fields: { key: Key, label: string }[] }) {
   const [isLoading, setIsLoading] = useState(true);
 
   let list = useAsyncList({
@@ -35,36 +35,26 @@ export default function JetTable(props: { jets: any }) {
     }
   });
 
-  const fields = [
-    {
-      key: "name",
-      label: "Name",
-    },
-    {
-      key: "wingspan",
-      label: "Wingspan",
-    },
-    {
-      key: "engine_qty",
-      label: "Engines",
-    },
-    {
-      key: "year_manufactured",
-      label: "Manufacturing Year",
-    },
-  ];
+  // function handleSelectionChange(keys: Selection) {
+  //   console.log('selected keys:', keys);
+  //   const output = [...keys];
+  //   console.log(output);
+    
+  //   selectedJets = 
+  // }
 
   return (
     <Table
       aria-label="Table of Charter Jets"
       sortDescriptor={list.sortDescriptor}
       onSortChange={list.sort}
+      // onSelectionChange={handleSelectionChange}
       classNames={{
         table: "min-h-[400px]",
       }}
       selectionMode="multiple"
     >
-      <TableHeader columns={fields}>
+      <TableHeader columns={props.fields}>
         {(column) => <TableColumn key={column.key} allowsSorting>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody
