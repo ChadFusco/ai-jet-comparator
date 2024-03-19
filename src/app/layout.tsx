@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{children: React.ReactNode;}>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen`}>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="sticky top-0 z-50 w-full backdrop-blur-lg backdrop-opacity-90 bg-secondary-rgba">
