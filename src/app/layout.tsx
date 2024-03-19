@@ -19,12 +19,14 @@ export default async function RootLayout({ children }: Readonly<{children: React
       <body className={inter.className}>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <header className="flex flexRow justify-between items-center p-4">
-              <div className="text-lg font-bold">
-                AI Jet Comparator
-              </div>
-              <ThemeSwitch />
-            </header>
+            <div className="sticky top-0 z-50 w-full backdrop-blur-lg backdrop-opacity-90 bg-secondary-rgba">
+              <header className="flex flexRow justify-between items-center p-4">
+                <div className="text-lg font-bold">
+                  AI Jet Comparator
+                </div>
+                <ThemeSwitch />
+              </header>
+            </div>
             {children}
           </ThemeProvider>
         </Providers>
@@ -32,3 +34,4 @@ export default async function RootLayout({ children }: Readonly<{children: React
     </html>
   );
 }
+// backdrop-blur
