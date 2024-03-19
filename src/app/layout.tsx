@@ -34,4 +34,3 @@ export default async function RootLayout({ children }: Readonly<{children: React
     </html>
   );
 }
-// backdrop-blur

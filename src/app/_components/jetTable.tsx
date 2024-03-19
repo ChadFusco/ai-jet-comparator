@@ -1,12 +1,14 @@
-import React, { Key, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Selection } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { SortDescriptor } from "@nextui-org/react";
+import { jets as Jet } from '@prisma/client';
+import { TableField } from "../types";
 
 export default function JetTable(props: {
-  jets: any[],
-  fields: { key: Key, label: string, sortable: boolean }[],
+  jets: Jet[],
+  fields: TableField[],
   initialSortDescriptor: SortDescriptor,
   enableSelector: boolean,
   handleSelectionChange: ((keys: Selection) => void)

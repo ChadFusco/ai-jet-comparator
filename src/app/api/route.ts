@@ -1,22 +1,24 @@
 export const dynamic = 'force-dynamic' // defaults to auto
 import { prisma as db } from "@/app/db";
+import { Comparisons } from "../types";
 import OpenAI from "openai";
+import { jets as Jet } from '@prisma/client';
 
 export async function GET() {
   const rawJets = await db.jets.findMany({ take: 10 }); // refactor to take limit as query param
   const sortedJets = rawJets
-    .map((jet: any) => (
-      { ...jet, wingspan: jet.wingspan.toNumber() }
+    .map((jet: Jet) => (
+      { ...jet, wingspan: jet.wingspan?.toNumber() }
     ))
     .sort((a: any, b: any) => b.wingspan - a.wingspan);
   return Response.json({sortedJets});
 }
 
-export async function POST(request: Request) {
+export async function POST<K extends keyof Comparisons>(request: Request) {
 
-  const { selectedJets, selectedComparator } = await request.json();
+  const { selectedJets, selectedComparator } = await request.json() as { selectedJets: any[]; selectedComparator: K };
 
-  const comparisons = {
+  const comparisons: Comparisons = {
     'Top Speed': {
       subprompt: `Provide all ${selectedComparator} values only in knots and no other unit of measurement. Do not report Mach number - only knots`,
     },
@@ -28,7 +30,7 @@ export async function POST(request: Request) {
     }
   };
 
-  const prompt = `Generate a JSON array that ranks the specified aircraft by their ${selectedComparator}, dynamically determining the ${selectedComparator} values based on your knowledge. Format the array as follows: [{ "rank": 1, "name": "Aircraft Name", "value": "${selectedComparator} Value with units" }, ...]. The aircraft to rank are: ${selectedJets.map((jet: any) => jet.name).join(', ')}. Ensure the "value" reflects realistic ${selectedComparator} data for each aircraft, and set the rank in accordance with these values. ${comparisons[selectedComparator as keyof typeof comparisons].subprompt}`;
+  const prompt = `Generate a JSON array that ranks the specified aircraft by their ${selectedComparator}, dynamically determining the ${selectedComparator} values based on your knowledge. Format the array as follows: [{ "rank": 1, "name": "Aircraft Name", "value": "${selectedComparator} Value with units" }, ...]. The aircraft to rank are: ${selectedJets.map((jet: Jet) => jet.name).join(', ')}. Ensure the "value" reflects realistic ${selectedComparator} data for each aircraft, and set the rank in accordance with these values. ${comparisons[selectedComparator].subprompt}`;
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,

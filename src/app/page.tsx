@@ -3,9 +3,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SortDescriptor, Spinner } from '@nextui-org/react';
+import { TableField } from './types';
+import { jets as Jet } from '@prisma/client';
 const JetTable = dynamic( () => import('./_components/jetTable'), { ssr: false } ); // lazy loading
 
-const jetFields = [
+const jetFields: TableField[] = [
   {
     key: "name",
     label: "Name",
@@ -28,7 +30,7 @@ const jetFields = [
   },
 ];
 
-const compareFields = [
+const compareFields: TableField[] = [
   {
     key: "rank",
     label: "Rank",
@@ -63,8 +65,8 @@ const comparisonFields = [
 ];
 
 export default function Home() {
-  const [jets, setJets] = useState([]);
-  const [selectedJets, setSelectedJets] = useState([]);
+  const [jets, setJets] = useState<Jet[]>([]);
+  const [selectedJets, setSelectedJets] = useState<Jet[]>([]);
   const [selectedKeys, setSelectedKeys] = useState(new Set([comparisonFields[0]]));
   const [compareArray, setCompareArray] = useState<[] | null>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +79,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchJets() {
       const res = await fetch('/api');
-      const { sortedJets } = await res.json();
+      const { sortedJets }: { sortedJets: Jet[] } = await res.json();
       setJets(sortedJets);
     }
     fetchJets();
@@ -118,9 +120,10 @@ export default function Home() {
     setSelectedJets(
       keys === 'all' ?
         jets :
-        jets.filter((jet: any) => keys.has(jet.name))
+        jets.filter((jet: Jet) => keys.has(jet.name))
     );
   }
+  // min-h-[440px]
 
   return (
     <main className="flex flex-col gap-5 p-24 pt-6 max-w-[1200px] mx-auto">
@@ -158,7 +161,7 @@ export default function Home() {
                 disallowEmptySelection
                 selectionMode="single"
                 selectedKeys={selectedKeys}
-                onSelectionChange={(keys) => setSelectedKeys(new Set<string>(Array.from(keys as Set<string>)))}
+                onSelectionChange={keys => setSelectedKeys(new Set<string>(Array.from(keys as Set<string>)))}
               >
                 {
                   comparisonFields.map(field => (
