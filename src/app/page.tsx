@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, SortDescriptor, Spinner } from '@nextui-org/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Selection, SortDescriptor, Spinner } from '@nextui-org/react';
 import { TableField } from './types';
 import { jets as Jet } from '@prisma/client';
+import { useTheme } from "next-themes";
 const JetTable = dynamic( () => import('./_components/jetTable'), { ssr: false } ); // lazy loading
 
 const jetFields: TableField[] = [
@@ -70,6 +71,7 @@ export default function Home() {
   const [selectedKeys, setSelectedKeys] = useState(new Set([comparisonFields[0]]));
   const [compareArray, setCompareArray] = useState<[] | null>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { theme, setTheme } = useTheme()
 
   const selectedComparator = useMemo(
     () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
@@ -123,10 +125,9 @@ export default function Home() {
         jets.filter((jet: Jet) => keys.has(jet.name))
     );
   }
-  // min-h-[440px]
 
   return (
-    <main className="flex flex-col gap-5 p-24 pt-6 max-w-[1200px] mx-auto">
+    <main className="flex flex-col gap-5 px-24 py-6 max-w-[1200px] mx-auto">
       <div className="text-2xl">
         Top 10 Charter Jets
       </div>
@@ -202,6 +203,25 @@ export default function Home() {
             />
           )
       }
+      <footer className="text-xs flex justify-center items-center mt-8">
+        <div>Built by Chad Fusco&nbsp;&nbsp;|&nbsp;&nbsp;</div>
+        <Link
+          isExternal
+          isBlock
+          size="sm"
+          href="https://github.com/ChadFusco/ai-jet-comparator"
+          className="flex justify-center items-center"
+        >
+          Source&nbsp;
+          <Image
+            src={theme === 'dark' ? "github-mark-white.svg" : "github-mark.svg"}
+            alt="Github Mark"
+            width={16}
+            height={16}
+          >
+          </Image>
+        </Link>
+      </footer>
     </main>
   );
 }
