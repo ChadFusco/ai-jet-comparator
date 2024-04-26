@@ -7,7 +7,7 @@ export default function Footer() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <footer className="text-xs flex justify-center items-center my-8">
+    <footer className="text-xs flex justify-center items-center py-8">
       <div>Built by Chad Fusco&nbsp;&nbsp;|&nbsp;&nbsp;</div>
       <Link
         isExternal

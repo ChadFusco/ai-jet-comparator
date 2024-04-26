@@ -5,7 +5,6 @@ import ThemeSwitch from "./_components/themeSwitch";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Providers from "@/app/_components/providers";
-// import Footer from "@/app/_components/footer";
 import dynamic from 'next/dynamic';
 const Footer = dynamic( () => import('@/app/_components/footer'), { ssr: false } ); // lazy loading
 
